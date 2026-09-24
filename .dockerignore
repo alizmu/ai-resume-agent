@@ -1,0 +1,13 @@
+# 不要打进 Docker 构建上下文的内容
+.git
+.workbuddy
+.qdrant_data
+.model_cache
+__pycache__
+*.pyc
+*.pyo
+node_modules
+docs
+.eval
+.env
+.api_log.txt

@@ -1,0 +1,24 @@
+# --- RAG 底座（阶段 1）---
+qdrant-client>=1.19        # 向量库，支持稠密+稀疏混合检索与 RRF 融合
+fastembed>=0.8             # 轻量 ONNX 推理，跑 bge-m3 与 reranker，无需 torch
+rank-bm25>=0.2             # BM25 基线，用于评测时做消融对比
+python-docx>=1.1           # docx 解析
+pypdf>=5.0                 # pdf 解析
+
+# --- 配置与工具 ---
+pydantic>=2.9
+pydantic-settings>=2.5
+python-dotenv>=1.0
+loguru>=0.7
+
+# --- LLM 调用（阶段 2 起使用）---
+openai>=1.40               # OpenAI 兼容协议，DeepSeek / Qwen / GLM 均可用
+
+# --- 服务与编排 ---
+# 注意：这几项曾被注释（历史标注"阶段 2-3 安装"），但 Dockerfile 直接拿本文件装依赖，
+# 不取消注释会导致构建出的镜像没有 FastAPI / uvicorn，容器一启动就 ImportError。
+fastapi>=0.115
+uvicorn[standard]>=0.30
+python-multipart>=0.0.9    # FastAPI 解析 multipart/form-data（文件上传必需，缺了表单直接 400）
+langgraph>=0.2
+langchain-core>=0.3

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG 简历助手 · 演示版</title>
+  <link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <div id="app">
+    <aside id="sidebar">
+      <div class="brand">
+        <div class="avatar">张</div>
+        <div class="brand-txt">
+          <div class="brand-name">RAG 简历助手 · 演示版</div>
+          <div class="brand-sub">RAG · 混合检索 · 多轮对话</div>
+        </div>
+        <button id="sidebar-close" class="icon-btn" aria-label="收起侧边栏" title="收起侧边栏">«</button>
+      </div>
+
+      <button id="new-chat" class="new-chat">+ 新对话</button>
+
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">这个助手会什么</div>
+        <ul class="sidebar-list">
+          <li>基于简历知识库问答，回答可溯源</li>
+          <li>混合检索（向量 + BM25）+ 重排</li>
+          <li>多轮记忆、Query 改写、拒答兜底</li>
+        </ul>
+      </div>
+
+      <div class="sidebar-row">
+        <div class="sidebar-row-txt">
+          <span class="sidebar-row-label">显示检索链路</span>
+          <span class="sidebar-row-hint">面试演示时打开</span>
+        </div>
+        <button id="chain-switch" class="switch on" role="switch" aria-checked="true"><span></span></button>
+      </div>
+
+      <div class="history">
+        <div class="history-title">历史对话</div>
+        <div id="history-list"></div>
+      </div>
+
+      <div class="sidebar-tip">
+        就简历内容自由提问：项目经历、技术栈、求职动机、政务大厅项目落地等。
+      </div>
+    </aside>
+
+    <div id="resizer" title="拖动调整侧边栏宽度"></div>
+
+    <main id="main">
+      <header id="topbar">
+        <button id="sidebar-toggle" class="menu-toggle" aria-label="展开侧边栏" title="展开 / 收起侧边栏">☰</button>
+        <span id="mode-badge" class="badge">检测中…</span>
+        <span id="status" class="status">就绪</span>
+        <button id="open-bootstrap" class="top-btn" title="填入你自己的资料，保存后自动切片入库">更换资料</button>
+      </header>
+
+      <section id="messages"></section>
+
+      <div id="suggests">
+        <button class="suggest">介绍一下你个人 AI 助手项目的技术架构</button>
+        <button class="suggest">为什么用混合检索而不是单纯向量检索？</button>
+        <button class="suggest">RAG 怎么保证回答不编造？</button>
+        <button class="suggest">政务大厅项目里叫号系统是怎么对接的？</button>
+      </div>
+
+      <footer id="composer">
+        <textarea id="input" rows="1" placeholder="向 AI 助手提问（Enter 发送，Shift+Enter 换行）"></textarea>
+        <button id="send">发送</button>
+      </footer>
+    </main>
+  </div>
+
+  <!-- 更换资料面板：填写 / 上传 -> 写入知识库 -> 自动切片入库 -->
+  <div id="boot-modal" class="modal" hidden>
+    <div class="modal-mask" data-close></div>
+    <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="boot-title">
+      <header class="modal-head">
+        <div>
+          <div id="boot-title" class="modal-title">更换资料</div>
+          <div class="modal-sub">填写或上传你的资料，保存后自动切片入库</div>
+        </div>
+        <button type="button" class="icon-btn" data-close aria-label="关闭">×</button>
+      </header>
+
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">姓名 <em>*</em></span>
+          <input id="boot-name" type="text" placeholder="例如：张三" autocomplete="off" />
+        </label>
+
+        <div class="field">
+          <span class="field-label">个人档案</span>
+          <textarea id="boot-profile" rows="4" placeholder="# 个人档案&#10;教育背景 / 工作经历 / 技能栈…&#10;（首行以 # 开头会作为文档标题）"></textarea>
+          <div class="file-row">
+            <input id="boot-profile-files" type="file" multiple accept=".md,.markdown,.txt,.docx,.pdf" />
+            <span class="file-hint">或上传 pdf / docx / md / txt</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-head">
+            <span class="field-label">项目经历</span>
+            <button type="button" id="boot-add-project" class="link-btn">+ 再加一个项目</button>
+          </div>
+          <div id="boot-projects" class="stack">
+            <textarea class="boot-project" rows="4" placeholder="# 项目名称&#10;背景 / 我的职责 / 技术要点 / 结果"></textarea>
+          </div>
+          <div class="file-row">
+            <input id="boot-project-files" type="file" multiple accept=".md,.markdown,.txt,.docx,.pdf" />
+            <span class="file-hint">或上传项目文档（可多选）</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">面试问答对</span>
+          <textarea id="boot-qa" rows="3" placeholder="Q: 你做过最有挑战的项目？&#10;A: …"></textarea>
+          <div class="file-row">
+            <input id="boot-qa-files" type="file" multiple accept=".md,.markdown,.txt,.docx,.pdf" />
+            <span class="file-hint">或上传问答文档</span>
+          </div>
+        </div>
+
+        <details class="adv">
+          <summary>高级选项</summary>
+          <div class="adv-body">
+            <label class="field">
+              <span class="field-label">项目白名单</span>
+              <input id="boot-anchors" type="text" placeholder="留空自动取项目标题，逗号分隔" />
+            </label>
+            <label class="field">
+              <span class="field-label">项目关键词</span>
+              <input id="boot-keywords" type="text" placeholder="如：RAG, 向量库" />
+            </label>
+            <label class="field">
+              <span class="field-label">管理 Token</span>
+              <input id="boot-token" type="password" placeholder="服务端配置了 REINDEX_TOKEN 时必填" autocomplete="off" />
+            </label>
+          </div>
+        </details>
+
+        <div id="boot-result" class="boot-result" hidden></div>
+      </div>
+
+      <footer class="modal-foot">
+        <span id="boot-msg" class="boot-msg"></span>
+        <button type="button" id="boot-cancel" class="btn">取消</button>
+        <button type="button" id="boot-submit" class="btn primary">保存并入库</button>
+      </footer>
+    </div>
+  </div>
+
+  <div id="tooltip" class="tooltip" role="tooltip"></div>
+  <script src="/app.js"></script>
+</body>
+</html>

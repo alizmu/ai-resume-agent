@@ -1,0 +1,29 @@
+# 密钥与环境（含 API key，切勿提交）
+.env
+.env.*
+!.env.example
+
+# 本地数据与缓存（体积大、机器相关）
+.qdrant_data/
+.model_cache/
+.model_cache_v2/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+
+# 发布产物 / 本地日志 / 工具目录
+deploy/online/
+.api_log.txt
+.workbuddy/
+
+# 本地测试工作台（用例脚本、复现脚本、知识库备份）
+.test/
+TEST_REPORT.md
+knowledge/memory/
+knowledge/processed/
+# 发布清单（sync_deploy / bootstrap 运行时生成，仅发布包需要）
+knowledge/manifest.txt
+
+# 评测结果（生成产物）
+eval/results/

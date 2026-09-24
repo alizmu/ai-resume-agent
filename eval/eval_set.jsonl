@@ -1,0 +1,14 @@
+{"id": 1, "category": "基本信息", "query": "张明今年多大，什么学校毕业的", "must_include": ["23 岁", "某应用型本科院校"]}
+{"id": 2, "category": "基本信息", "query": "他学的是什么专业", "must_include": ["数据科学与大数据技术"]}
+{"id": 3, "category": "基本信息", "query": "他现在在哪家公司", "must_include": ["某智能科技公司"]}
+{"id": 4, "category": "基本信息", "query": "他有哪些技术栈", "must_include": ["Python", "FastAPI", "RAG"]}
+{"id": 5, "category": "政务大厅项目", "query": "政务大厅项目是什么时候做的，做了多久", "must_include": ["2026 年 6 月"]}
+{"id": 6, "category": "政务大厅项目", "query": "他在这个项目里担任什么角色", "must_include": ["现场部署工程师"]}
+{"id": 7, "category": "政务大厅项目", "query": "机器人部署在多大的场地里", "must_include": ["200 平方米"]}
+{"id": 8, "category": "政务大厅项目", "query": "设置了几个接待点位", "must_include": ["6 个接待点位"]}
+{"id": 9, "category": "政务大厅项目", "query": "叫号系统不准是怎么解决的", "must_include": ["叫号系统", "接口"]}
+{"id": 10, "category": "政务大厅项目", "query": "这个项目最终推动了几项产品优化", "must_include": ["2 项产品优化"]}
+{"id": 11, "category": "个人AI助手项目", "query": "他的个人 AI 助手项目技术架构是怎样的", "must_include": ["LangGraph", "混合检索"]}
+{"id": 12, "category": "动机", "query": "他为什么看新机会", "must_include": ["成长空间", "Agent"]}
+{"id": 13, "category": "拒答类", "query": "张明精通 Java 和 Spring Cloud 吗", "must_include": [], "should_refuse": true}
+{"id": 14, "category": "拒答类", "query": "他高考多少分", "must_include": [], "should_refuse": true}
